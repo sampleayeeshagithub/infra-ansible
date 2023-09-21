@@ -1,0 +1,52 @@
+- name: Set Hostname
+  ansible.builtin.shell: set-hostname backend
+
+- name: verify nodejs
+  ansible.builtin.shell: type npm
+  register: npm
+  ignore_errors: yes
+
+- name: install nodejs
+  ansible.builtin.shell: curl -sL https://rpm.nodesource.com/setup_lts.x | bash
+  when: npm.rc != 0
+
+- name: install nodejs
+  ansible.builtin.dnf:
+    name: nodejs
+  when: npm.rc != 0
+
+
+- name: copy backend service file
+  ansible.builtin.template:
+    src: backend.service
+    dest: /etc/systemd/system/backend.service
+
+- name: add application user
+  ansible.builtin.user:
+    name: expense
+
+- name: include app pre-requisites
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app_prereq
+
+
+
+- name: install nodejs dependencies
+  ansible.builtin.shell: npm install
+  args:
+    chdir: /app
+
+- name: install mysql client
+  ansible.builtin.dnf:
+    name: mysql
+
+- name: load schema
+  ansible.builtin.shell: mysql -h {{ lookup('aws_ssm', 'expense.backend.DB_HOST', region='us-east-1' ) }} -uroot  -p{{ lookup('aws_ssm', 'expense.backend.DB_PASS', region='us-east-1' ) }} < /app/schema/backend.sql
+
+- name: start backend service
+  ansible.builtin.systemd:
+    name: backend
+    state: restarted
+    enabled: yes
+    daemon-reload: yes
