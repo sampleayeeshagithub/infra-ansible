@@ -3,6 +3,11 @@
     src: prometheus.yml
     dest: /opt/prometheus/prometheus.yml
 
+- name: copy prometheus configuration - Record file
+  ansible.builtin.template:
+    src: prometheus.yml
+    dest: /opt/prometheus/record.yml
+
 - name: restart prometheus
   ansible.builtin.systemd:
     name: prometheus
