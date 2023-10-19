@@ -23,7 +23,7 @@ pipeline {
     stage('Deployment') {
       steps {
         sh '''
-          aws ec2 describe-instances --filters "Name=tag:Name,Values=${env}-${APP_NAME}" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text  >hosts
+          aws ec2 describe-instances --filters "Name=tag:Name,Values=${ENV}-${APP_NAME}" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text  >hosts
           ansible-playbook -i hosts main.yml -e role_name=${APP_NAME} -e env=${VERSION}
         '''
       }
