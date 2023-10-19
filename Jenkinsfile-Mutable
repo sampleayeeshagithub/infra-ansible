@@ -24,6 +24,8 @@ pipeline {
       steps {
         sh '''
           aws ec2 describe-instances --filters "Name=tag:Name,Values=${ENV}-${APP_NAME}" --query "Reservations[*].Instances[*].PrivateIpAddress" --output text  >hosts
+          ssh_user=`aws ssm get-parameter --name "ssh_username" --query "Parameter.Value" --output text`
+          ssh_pass=`aws ssm get-parameter --name "ssh_password" --query "Parameter.Value" --output text'
           ansible-playbook -i hosts main.yml -e role_name=${APP_NAME} -e env=${VERSION}
         '''
       }
