@@ -16,6 +16,6 @@
 
 - name: download backend code and extract it
   ansible.builtin.unarchive:
-    src: http://{{ lookup('aws_ssm', 'artifactory_username', region='us-east-1' ) }}:{{ lookup('aws_ssm', 'artifactory_password', region='us-east-1' ) }}@artifactory.ayeeshadevops75.online:8081/artifactory/{{ component }}/{{ component }}-{{ lookup('aws_ssm', '{{env}}.{{ component }}.app_version', region='us-east-1' ) }}.zip
+    src: http://{{ lookup('aws_ssm', 'artifactory_username', region='us-east-1' ) }}:{{ lookup('aws_ssm', 'artifactory_password', region='us-east-1' ) }}@172.31.37.255:8081/artifactory/{{ component }}/{{ component }}-{{ lookup('aws_ssm', '{{env}}.{{ component }}.app_version', region='us-east-1' ) }}.zip
     dest: "{{ app_loc }}"
     remote_src: yes
