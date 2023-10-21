@@ -1,6 +1,7 @@
 - name: ansible setup for project
   hosts: all
   become: yes
+  serial: 1
   roles:
     - "{{ role_name }}"
 
