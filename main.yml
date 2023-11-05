@@ -1,4 +1,4 @@
-- name: ansible setup for project
+- name: Ansible Setup for Project
   hosts: all
   become: yes
   serial: 1
